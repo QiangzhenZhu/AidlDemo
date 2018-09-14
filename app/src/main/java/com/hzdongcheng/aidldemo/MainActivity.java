@@ -110,12 +110,14 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
      * 检测箱子状态
      */
     public void detectBoxStatus(){
+        //本demo出于便捷考虑，检测箱子状态时，使用的HAL.getBoxStatus(箱子名称)是根据箱子名称获取状态。
+        //HAL下还有一个重载的HAL.getBoxStatus()方法，是根据副柜获取的。
         service.scheduleWithFixedDelay(new Runnable() {
             @Override
             public void run() {
                 for (int i = 0; i <4 ; i++) {
                     try {
-                        BoxStatus status = ServiceProviderInstance.getBoxStatus(String.valueOf(i+1));
+                        BoxStatus status = HAL.getBoxStatus(String.valueOf(i+1));
                         if (status != null) {
                             BoxStatus boxStatus = boxStatusList.get(i);
                             //箱内是否有物品

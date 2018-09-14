@@ -4,9 +4,15 @@ import android.content.Context;
 import android.os.RemoteException;
 import android.util.Log;
 
+import com.google.gson.Gson;
+import com.hzdongcheng.aidldemo.bean.BoxStatus;
 import com.hzdongcheng.aidldemo.bean.ICallBack;
+import com.hzdongcheng.aidldemo.bean.SlaveStatus;
 import com.hzdongcheng.drivers.bean.Result;
 import com.hzdongcheng.drivers.peripheral.IObserver;
+
+import java.util.HashMap;
+import java.util.Map;
 
 /**
  * Created by zzq on 2018/9/13
@@ -53,6 +59,64 @@ public class HAL {
         }
         return false;
     }
+
+
+    /**
+     * 获取箱门状态
+     * @param boxName
+     * @return
+     */
+    public static BoxStatus getBoxStatus(String boxName)throws Exception {
+        try {
+            Result result = ServiceProviderInstance.getInstance().getSlaveController().queryBoxStatusByName(boxName);
+            if (result.getCode() == 0) {
+                Log.e(TAG,"[HAL] 获取格口状态成功 -->" + new Gson().toJson(result));
+                return new Gson().fromJson(result.getData(), BoxStatus.class);
+            }
+            Log.e(TAG,"[HAL] 获取格口状态失败 boxName " + boxName);
+            throw new Exception("获取格口状态失败");
+        } catch (RemoteException e) {
+            Log.e(TAG,"[HAL] 获取格口状态服务出错, boxName " + boxName);
+            throw new Exception("获取格口状态服务出错");
+        }
+    }
+
+    /**
+     * 根据整组副柜，获取箱门状态
+     */
+    public static void getBoxStatue(){
+        Map<Integer, SlaveStatus> boxStatusMap = new HashMap<>();
+        //假设 快递柜一共有 4组 副柜
+        for (int i = 0; i < 4; i++) {
+            try {
+                boxStatusMap.put(i,getSlaveStatus(i));
+            } catch (Exception e) {
+                Log.e(TAG,"获取箱门状态错误 ");
+            }
+        }
+
+    }
+
+    /**
+     * 获取副柜状态
+     *
+     * @param boardId 副柜编码
+     * @return 副柜状态
+     */
+    public static SlaveStatus getSlaveStatus(int boardId) throws Exception {
+        try {
+            Result result = ServiceProviderInstance.getInstance().getSlaveController().queryStatusById((byte) boardId);
+            if (result.getCode() == 0) {
+                return new Gson().fromJson(result.getData(), SlaveStatus.class);
+            }
+            Log.d(TAG,"[HAL] 获取副柜状态失败 board" + boardId);
+            throw new Exception("获取副柜状态失败");
+        } catch (RemoteException e) {
+           Log.d(TAG,"[HAL] 获取副柜状态服务出错, board " + boardId);
+            throw new Exception("获取副柜状态服务出错");
+        }
+    }
+
 
 
     /**

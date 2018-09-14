@@ -137,25 +137,6 @@ public class ServiceProviderInstance {
         return slaveController;
     }
 
-    /**
-     * 获取箱门状态
-     * @param boxName
-     * @return
-     */
-    public static BoxStatus getBoxStatus(String boxName)throws Exception {
-        try {
-            Result result = ServiceProviderInstance.getInstance().getSlaveController().queryBoxStatusByName(boxName);
-            if (result.getCode() == 0) {
-                Log.e(TAG,"[HAL] 获取格口状态成功 -->" + new Gson().toJson(result));
-                return new Gson().fromJson(result.getData(), BoxStatus.class);
-            }
-            Log.e(TAG,"[HAL] 获取格口状态失败 boxName " + boxName);
-            throw new Exception("获取格口状态失败");
-        } catch (RemoteException e) {
-            Log.e(TAG,"[HAL] 获取格口状态服务出错, boxName " + boxName);
-            throw new Exception("获取格口状态服务出错");
-        }
-    }
 
     /**
      * 获取扫描枪服务
