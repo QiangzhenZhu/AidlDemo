@@ -173,6 +173,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         //unbind
         ServiceProviderInstance.getInstance().unBind();
         super.onDestroy();
+
     }
 
 }

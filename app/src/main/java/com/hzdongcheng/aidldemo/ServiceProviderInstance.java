@@ -165,6 +165,8 @@ public class ServiceProviderInstance {
     }
 
     //解绑
+
+
     public void unBind(){
         if (contextWeakReference.get() != null){
             contextWeakReference.get().unbindService(serviceConnection);
